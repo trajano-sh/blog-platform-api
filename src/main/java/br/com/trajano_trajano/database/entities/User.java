@@ -43,11 +43,7 @@ public class User {
     private List<Comment> comments = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(
-            name = "tb_user_followers",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "follower_id")
-    )
+    @JoinTable(name = "tb_user_followers", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "follower_id"))
     private Set<User> followers = new HashSet<>();
 
     @ManyToMany(mappedBy = "followers")

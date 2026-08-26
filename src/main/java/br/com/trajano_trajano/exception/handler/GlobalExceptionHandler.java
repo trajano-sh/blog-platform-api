@@ -11,7 +11,7 @@ import java.time.Instant;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // BAD_REQUEST
+    // BAD_REQUEST \\
     @ExceptionHandler(Business.class)
     public ResponseEntity<ErrorResponse> businessHandler(Business ex) {
         return build(HttpStatus.BAD_REQUEST, ex.getMessage());
@@ -21,6 +21,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> runTimeExceptionHandler(RuntimeException ex) {
         return build(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
+
+    // INTERNAL_SERVER_ERROR \\
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> exceptionHandler(Exception ex) {
