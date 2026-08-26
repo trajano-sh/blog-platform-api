@@ -19,25 +19,23 @@ public class UserService {
     private final UserMapper userMapper;
 
     public void createUser(UserRequestDTO dto) {
-        log.info("validando informacoes");
+        log.info("Validando informações");
         if (userRepository.existsByUsername(dto.username()) || userRepository.existsByEmail(dto.email())) {
-            throw new Business("Username ou email ja existem");
+            throw new Business("Username ou email já existem");
         }
-
         if (dto.password().length()<6) {
-            throw new Business("Password precisa ter no minimo 6 caracteres");
+            throw new Business("Password precisa ter no mínimo 6 caracteres");
         }
-
         User user = userMapper.toEntity(dto);
-        log.info("Salvando informacoes no banco de dados");
+        log.info("Salvando informações no banco de dados");
         userRepository.save(user);
     }
 
     public void deleteUser(UUID userId) {
-        log.info("verificando se usuario existe");
+        log.info("Verificando se usuário existe");
         User user = userRepository.findById(userId)
-                .orElseThrow(()->new Business("Usuario nao encontrado"));
-        log.info("usuario encontrado e deletando");
+                .orElseThrow(()->new Business("Usuário não encontrado"));
+        log.info("Usuario encontrado e deletando");
         userRepository.delete(user);
     }
 }
