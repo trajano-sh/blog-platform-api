@@ -3,6 +3,7 @@ package br.com.trajano_trajano.service;
 import br.com.trajano_trajano.database.entities.User;
 import br.com.trajano_trajano.database.repository.UserRepository;
 import br.com.trajano_trajano.dto.UserRequestDTO;
+import br.com.trajano_trajano.dto.UserResponseDTO;
 import br.com.trajano_trajano.exception.Business;
 import br.com.trajano_trajano.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
@@ -31,11 +32,22 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void deleteUser(UUID userId) {
+    public User findUser(UUID userId) {
         log.info("Verificando se usuário existe");
         User user = userRepository.findById(userId)
                 .orElseThrow(()->new Business("Usuário não encontrado"));
-        log.info("Usuario encontrado e deletando");
+        log.info("Usuario encontrado: {}",user.getUsername());
+        return user;
+    }
+
+    public UserResponseDTO findUserById(UUID userId) {
+        User user = findUser(userId);
+        return userMapper.toResponse(user);
+    }
+
+    public void deleteUser(UUID userId) {
+        User user = findUser(userId);
+        log.info("Deletando usuario: {}",user.getUsername());
         userRepository.delete(user);
     }
 }

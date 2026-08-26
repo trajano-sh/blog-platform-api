@@ -1,6 +1,7 @@
 package br.com.trajano_trajano.controller;
 
 import br.com.trajano_trajano.dto.UserRequestDTO;
+import br.com.trajano_trajano.dto.UserResponseDTO;
 import br.com.trajano_trajano.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,11 @@ public class UserController {
     public ResponseEntity<Void> createUser(@RequestBody UserRequestDTO dto) {
         userService.createUser(dto);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserResponseDTO> findUserById(@PathVariable UUID userId) {
+        return ResponseEntity.ok(userService.findUserById(userId));
     }
 
     @DeleteMapping("/{userId}")
