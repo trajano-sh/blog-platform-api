@@ -3,7 +3,7 @@ package br.com.trajano_trajano.service;
 import br.com.trajano_trajano.database.entities.User;
 import br.com.trajano_trajano.database.repository.UserRepository;
 import br.com.trajano_trajano.dto.UserResponseDTO;
-import br.com.trajano_trajano.exception.BusinessException;
+import br.com.trajano_trajano.exception.NotFoundException;
 import br.com.trajano_trajano.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +32,6 @@ public class UserService {
     public User findByUserIdOrThrow(UUID userId) {
         log.info("Buscando usuário por ID: {}", userId);
         return userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException("Usuário não encontrado"));
+                .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
     }
 }
