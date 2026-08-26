@@ -1,8 +1,8 @@
 package br.com.trajano_trajano.mapper;
 
-import br.com.trajano_trajano.database.entities.Post;
-import br.com.trajano_trajano.database.entities.Tag;
-import br.com.trajano_trajano.database.entities.User;
+import br.com.trajano_trajano.database.model.Post;
+import br.com.trajano_trajano.database.model.Tag;
+import br.com.trajano_trajano.database.model.User;
 import br.com.trajano_trajano.database.repository.TagRepository;
 import br.com.trajano_trajano.dto.PostRequestDTO;
 import br.com.trajano_trajano.dto.PostResponseDTO;

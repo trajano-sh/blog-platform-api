@@ -1,7 +1,7 @@
 package br.com.trajano_trajano.service;
 
-import br.com.trajano_trajano.database.entities.Post;
-import br.com.trajano_trajano.database.entities.User;
+import br.com.trajano_trajano.database.model.Post;
+import br.com.trajano_trajano.database.model.User;
 import br.com.trajano_trajano.database.repository.PostRepository;
 import br.com.trajano_trajano.dto.PostRequestDTO;
 import br.com.trajano_trajano.exception.BusinessException;

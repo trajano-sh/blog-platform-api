@@ -1,8 +1,8 @@
 package br.com.trajano_trajano.dto;
 
-import br.com.trajano_trajano.database.entities.Comment;
-import br.com.trajano_trajano.database.entities.Post;
-import br.com.trajano_trajano.database.entities.User;
+import br.com.trajano_trajano.database.model.Comment;
+import br.com.trajano_trajano.database.model.Post;
+import br.com.trajano_trajano.database.model.User;
 
 import java.time.Instant;
 import java.util.List;

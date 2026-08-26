@@ -1,4 +1,4 @@
-package br.com.trajano_trajano.database.entities;
+package br.com.trajano_trajano.database.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

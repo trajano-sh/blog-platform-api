@@ -1,6 +1,6 @@
 package br.com.trajano_trajano.service;
 
-import br.com.trajano_trajano.database.entities.User;
+import br.com.trajano_trajano.database.model.User;
 import br.com.trajano_trajano.database.repository.UserRepository;
 import br.com.trajano_trajano.dto.UserRequestDTO;
 import br.com.trajano_trajano.dto.UserResponseDTO;

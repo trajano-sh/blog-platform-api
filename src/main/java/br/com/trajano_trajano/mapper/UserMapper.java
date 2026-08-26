@@ -1,6 +1,6 @@
 package br.com.trajano_trajano.mapper;
 
-import br.com.trajano_trajano.database.entities.User;
+import br.com.trajano_trajano.database.model.User;
 import br.com.trajano_trajano.dto.UserRequestDTO;
 import br.com.trajano_trajano.dto.UserResponseDTO;
 import org.springframework.stereotype.Component;
