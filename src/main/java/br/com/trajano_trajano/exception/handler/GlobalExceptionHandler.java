@@ -1,6 +1,6 @@
 package br.com.trajano_trajano.exception.handler;
 
-import br.com.trajano_trajano.exception.Business;
+import br.com.trajano_trajano.exception.BusinessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,8 +12,8 @@ import java.time.Instant;
 public class GlobalExceptionHandler {
 
     // BAD_REQUEST \\
-    @ExceptionHandler(Business.class)
-    public ResponseEntity<ErrorResponse> businessHandler(Business ex) {
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorResponse> businessHandler(BusinessException ex) {
         return build(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 

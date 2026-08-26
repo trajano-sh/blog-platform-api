@@ -26,4 +26,8 @@ public class Tag {
 
     @ManyToMany(mappedBy = "tags")
     private Set<Post> posts = new HashSet<>();
+
+    public Tag(String name) {
+        this.name = name;
+    }
 }
