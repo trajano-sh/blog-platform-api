@@ -15,12 +15,6 @@ import java.util.UUID;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping
-    public ResponseEntity<Void> createUser(@RequestBody UserRequestDTO dto) {
-        userService.createUser(dto);
-        return ResponseEntity.noContent().build();
-    }
-
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponseDTO> findUserById(@PathVariable UUID userId) {
         return ResponseEntity.ok(userService.findUserById(userId));

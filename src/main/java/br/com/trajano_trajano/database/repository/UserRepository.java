@@ -1,6 +1,6 @@
 package br.com.trajano_trajano.database.repository;
 
-import br.com.trajano_trajano.database.model.User;
+import br.com.trajano_trajano.database.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

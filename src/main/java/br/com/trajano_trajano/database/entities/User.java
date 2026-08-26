@@ -1,5 +1,6 @@
-package br.com.trajano_trajano.database.model;
+package br.com.trajano_trajano.database.entities;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,6 +35,10 @@ public class User implements UserDetails {
 
     private String bio;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "tb_user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
     @CreationTimestamp
     @Column(updatable = false)
     private Instant createdAt;
@@ -45,15 +50,27 @@ public class User implements UserDetails {
     private List<Comment> comments = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(name = "tb_user_followers", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "follower_id"))
+    @JoinTable(name = "tb_user_followers",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "follower_id"))
     private Set<User> followers = new HashSet<>();
 
     @ManyToMany(mappedBy = "followers")
     private Set<User> following = new HashSet<>();
 
     @Override
+    public @Nullable String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return this.roles;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package br.com.trajano_trajano.enums;
 
-public enum Role {
+public enum RoleTypeEnum {
     BASIC,
     ADMIN
 }
