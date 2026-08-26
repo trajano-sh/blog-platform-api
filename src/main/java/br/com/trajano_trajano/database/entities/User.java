@@ -10,8 +10,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.Instant;
 import java.util.*;
 
-@Table(name = "users")
+@Table(name = "tb_users")
 @Getter
+@Entity
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,10 +37,10 @@ public class User {
     private Instant createdAt;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Object> posts = new ArrayList<>();
+    private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Object> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
