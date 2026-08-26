@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -21,6 +23,7 @@ public class UserService {
         if (userRepository.existsByUsername(dto.username()) || userRepository.existsByEmail(dto.email())) {
             throw new Business("Username ou email ja existem");
         }
+
         if (dto.password().length()<6) {
             throw new Business("Password precisa ter no minimo 6 caracteres");
         }
@@ -28,5 +31,13 @@ public class UserService {
         User user = userMapper.toEntity(dto);
         log.info("Salvando informacoes no banco de dados");
         userRepository.save(user);
+    }
+
+    public void deleteUser(UUID userId) {
+        log.info("verificando se usuario existe");
+        User user = userRepository.findById(userId)
+                .orElseThrow(()->new Business("Usuario nao encontrado"));
+        log.info("usuario encontrado e deletando");
+        userRepository.delete(user);
     }
 }
