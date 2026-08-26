@@ -35,6 +35,19 @@ public class PostMapper {
         return post;
     }
 
+    public Post toUpdate(Post post,PostRequestDTO dto) {
+        post.setTitle(dto.title());
+        post.setContent(dto.content());
+        if (dto.tags() != null && !dto.tags().isEmpty()) {
+            Set<Tag> tags = dto.tags().stream().map(String::trim).map(String::toLowerCase)
+                    .map(name -> tagRepository.findByName(name)
+                            .orElseGet(() -> tagRepository.save(new Tag(name)))).collect(Collectors.toSet());
+
+            post.setTags(tags);
+        }
+        return post;
+    }
+
     public PostResponseDTO toResponse(Post post) {
         return new PostResponseDTO(
                 post.getId(),

@@ -59,6 +59,18 @@ public class User implements UserDetails {
     private Set<User> following = new HashSet<>();
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User user)) return false;
+        return id != null && id.equals(user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
     public @Nullable String getPassword() {
         return this.password;
     }

@@ -1,6 +1,7 @@
 package br.com.trajano_trajano.exception.handler;
 
 import br.com.trajano_trajano.exception.BadRequestException;
+import br.com.trajano_trajano.exception.ForbiddenException;
 import br.com.trajano_trajano.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
+        return build(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ErrorResponse> handleForbiddenException(ForbiddenException ex) {
         return build(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
