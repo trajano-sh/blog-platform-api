@@ -1,7 +1,7 @@
 package br.com.trajano_trajano.security;
 
-import br.com.trajano_trajano.database.entities.User;
-import br.com.trajano_trajano.database.repository.UserRepository;
+import br.com.trajano_trajano.user.User;
+import br.com.trajano_trajano.user.UserRepository;
 import com.sun.security.auth.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
