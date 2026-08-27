@@ -1,5 +1,6 @@
 package br.com.trajano_trajano.post;
 
+import br.com.trajano_trajano.shared.pagination.PageResponse;
 import br.com.trajano_trajano.user.User;
 import br.com.trajano_trajano.post.dto.PostRequestDTO;
 import br.com.trajano_trajano.post.dto.PostResponseDTO;
@@ -29,15 +30,16 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<PostResponseDTO>> getAllPosts(@PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(postService.getAllPosts(pageable));
+    public ResponseEntity<PageResponse<PostResponseDTO>> getAllPosts(@PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<PostResponseDTO> posts = postService.getAllPosts(pageable);
+        return ResponseEntity.ok(PageResponse.from(posts));
     }
 
     @GetMapping("/tags/{tagName}")
-    public ResponseEntity<Page<PostResponseDTO>> getPostsByTag(@PathVariable String tagName, @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<PageResponse<PostResponseDTO>> getPostsByTag(@PathVariable String tagName, @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<PostResponseDTO> posts = postService.getPostsByTag(tagName, pageable);
-        return ResponseEntity.ok(posts);
+        return ResponseEntity.ok(PageResponse.from(posts));
     }
 
     @GetMapping("/{postId}")
@@ -46,8 +48,9 @@ public class PostController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Page<PostResponseDTO>> searchPosts(@RequestParam(name = "q", required = false) String query, @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(postService.searchPost(query, pageable));
+    public ResponseEntity<PageResponse<PostResponseDTO>> searchPosts(@RequestParam(name = "q", required = false) String query, @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<PostResponseDTO> posts = postService.searchPost(query,pageable);
+        return ResponseEntity.ok(PageResponse.from(posts));
     }
 
     @PostMapping("/{postId}/likes")

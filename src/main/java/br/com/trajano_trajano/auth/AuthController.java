@@ -18,13 +18,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody RegisterRequestDTO dto) throws BadRequestException {
+    public ResponseEntity<Void> register(@RequestBody RegisterRequestDTO dto) {
         authService.register(dto);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponseDTO> login(@RequestBody LoginRequestDTO dto) throws Exception {
+    public ResponseEntity<TokenResponseDTO> login(@RequestBody LoginRequestDTO dto) {
         return ResponseEntity.ok(authService.login(dto));
     }
 }

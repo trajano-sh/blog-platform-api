@@ -2,6 +2,7 @@ package br.com.trajano_trajano.user;
 
 import br.com.trajano_trajano.post.PostService;
 import br.com.trajano_trajano.post.dto.PostResponseDTO;
+import br.com.trajano_trajano.shared.pagination.PageResponse;
 import br.com.trajano_trajano.user.dto.ChangePasswordDTO;
 import br.com.trajano_trajano.user.dto.UserMeResponseDTO;
 import br.com.trajano_trajano.user.dto.UserResponseDTO;
@@ -40,6 +41,18 @@ public class UserController {
         return ResponseEntity.ok(userService.userUpdateProfile(user, dto));
     }
 
+    @PostMapping("/{usernameToFollow}/followers")
+    public ResponseEntity<Void> followUser(@AuthenticationPrincipal User currentUser, @PathVariable String usernameToFollow) {
+        userService.followUser(currentUser, usernameToFollow);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{usernameToFollow}/followers")
+    public ResponseEntity<Void> unfollowUser(@AuthenticationPrincipal User currentUser, @PathVariable String usernameToFollow) {
+        userService.unfollowUser(currentUser, usernameToFollow);
+        return ResponseEntity.noContent().build();
+    }
+
     @PatchMapping("/me/password")
     public ResponseEntity<Void> updatePassword(@AuthenticationPrincipal User currentUser, @Valid @RequestBody ChangePasswordDTO dto) {
         userService.changePassword(currentUser, dto);
@@ -47,9 +60,9 @@ public class UserController {
     }
 
     @GetMapping("/{username}/posts")
-    public ResponseEntity<Page<PostResponseDTO>> getPostsByUsername(@PathVariable String username, @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-
-        return ResponseEntity.ok(postService.getPostsByAuthorUsername(username, pageable));
+    public ResponseEntity<PageResponse<PostResponseDTO>> getPostsByUsername(@PathVariable String username, @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<PostResponseDTO> posts = postService.getPostsByAuthorUsername(username, pageable);
+        return ResponseEntity.ok(PageResponse.from(posts));
     }
 
     @DeleteMapping("/{userId}")

@@ -50,9 +50,9 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public Page<PostResponseDTO> getPostsByAuthorUsername(String username, Pageable pageable) {
-        userService.findByUserIdOrThrow(username);
+        userService.findByUsernameOrThrow(username);
 
-        return postRepository.findBYAuthorUsernameIgnoreCase(username, pageable).map(postMapper::toResponse);
+        return postRepository.findByAuthorUsernameIgnoreCase(username, pageable).map(postMapper::toResponse);
     }
 
     @Transactional(readOnly = true)
@@ -98,11 +98,9 @@ public class PostService {
     public void unlikePost(UUID postId, UUID userId) {
         Post post = findByPostIdOrThrow(postId);
         User user = userService.findByUserIdOrThrow(userId);
-
         if (!post.getLikes().contains(user)) {
             throw new BadRequestException("Você ainda não curtiu esta publicação.");
         }
-
         post.getLikes().remove(user);
         postRepository.save(post);
     }

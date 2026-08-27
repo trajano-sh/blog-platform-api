@@ -19,7 +19,9 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public UserMeResponseDTO userMe(User user) {
+    @Transactional(readOnly = true)
+    public UserMeResponseDTO userMe(User currentUser) {
+        User user = findByUserIdOrThrow(currentUser.getId());
         return userMapper.userMe(user);
     }
 
@@ -64,7 +66,7 @@ public class UserService {
     }
 
     @Transactional
-    public void unfollowUser(User currentUser,String usernameToUnfollow){
+    public void unfollowUser(User currentUser, String usernameToUnfollow) {
         User follower = findByUserIdOrThrow(currentUser.getId());
         User targetUser = findByUsernameOrThrow(usernameToUnfollow);
 

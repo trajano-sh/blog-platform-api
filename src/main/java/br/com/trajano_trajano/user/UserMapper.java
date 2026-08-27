@@ -1,9 +1,11 @@
 package br.com.trajano_trajano.user;
 
+import br.com.trajano_trajano.role.Role;
 import br.com.trajano_trajano.user.dto.*;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class UserMapper {
@@ -14,7 +16,10 @@ public class UserMapper {
                 user.getUsername(),
                 user.getEmail(),
                 user.getBio(),
-                Set.of(user.getRoles().toString()),
+                user.getRoles()
+                        .stream()
+                        .map(Role::getName)
+                        .collect(Collectors.toSet()),
                 user.getFollowers().size(),
                 user.getFollowing().size(),
                 user.getCreatedAt()

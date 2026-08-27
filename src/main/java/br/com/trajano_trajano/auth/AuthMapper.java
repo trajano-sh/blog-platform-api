@@ -10,6 +10,7 @@ import java.util.Set;
 
 @Component
 public class AuthMapper {
+
     public User toEntity(Set<Role> role, RegisterRequestDTO dto) {
         User user = new User();
         user.setUsername(dto.username());
