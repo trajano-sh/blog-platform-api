@@ -26,9 +26,8 @@ public class UserMapper {
         );
     }
 
-    public User userUpdateProfile(User user, UserUpdateProfileDTO dto) {
+    public void userUpdateProfile(User user, UserUpdateProfileDTO dto) {
         user.setBio(dto.bio());
-        return user;
     }
 
     public UserProfileResponseDTO userProfile(User user) {

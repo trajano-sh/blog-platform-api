@@ -1,6 +1,7 @@
 package br.com.trajano_trajano.user;
 
 import br.com.trajano_trajano.shared.exception.BadRequestException;
+import br.com.trajano_trajano.shared.exception.ForbiddenException;
 import br.com.trajano_trajano.shared.exception.NotFoundException;
 import br.com.trajano_trajano.user.dto.*;
 import lombok.RequiredArgsConstructor;
@@ -57,7 +58,7 @@ public class UserService {
         User follower = findByUserIdOrThrow(currentUser.getId());
         User targetUser = findByUsernameOrThrow(usernameToFollow);
         if (follower.getId().equals(targetUser.getId()))
-            throw new BadRequestException("Voce nao pode seguir a si mesmo");
+            throw new BadRequestException("Voce não pode seguir a si mesmo");
         if (follower.getFollowing().contains(targetUser))
             throw new BadRequestException("Você já está seguindo este usuário");
         follower.getFollowing().add(targetUser);
@@ -102,9 +103,10 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(UUID userId) {
-        User user = findByUserIdOrThrow(userId);
-        log.info("Deletando usuario: {}", user.getUsername());
+    public void deleteUser(User userAuth) {
+        log.info("Verificando Usuário.");
+        User user = findByUserIdOrThrow(userAuth.getId());
+        log.info("Deletando Usuário: {}", user.getUsername());
         userRepository.delete(user);
     }
 
