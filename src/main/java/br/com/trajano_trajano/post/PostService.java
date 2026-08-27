@@ -123,7 +123,7 @@ public class PostService {
         return isLiked;
     }
 
-    private Post findByPostIdOrThrow(UUID postId) {
+    public Post findByPostIdOrThrow(UUID postId) {
         log.info("Buscando post por ID: {}", postId);
         return postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Post nao encontrado"));
     }
