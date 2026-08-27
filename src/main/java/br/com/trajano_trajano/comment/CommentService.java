@@ -38,9 +38,9 @@ public class CommentService {
     @Transactional
     public CommentResponseDTO updatedComment(UUID commentId, User currentUser, CommentRequestDTO dto) {
         Comment comment = findCommentById(commentId);
-        if (!comment.getAuthor().getId().equals(currentUser.getId())) {
+        if (!comment.getAuthor().getId().equals(currentUser.getId()))
             throw new ForbiddenException("Você não tem permissão para editar este comentário.");
-        }
+        log.info("Atualizando comentario");
         commentMapper.toUpdate(comment, dto);
         commentRepository.save(comment);
         return commentMapper.toResponse(comment);
@@ -63,6 +63,7 @@ public class CommentService {
         Comment comment = findCommentById(commentId);
         if (!comment.getAuthor().getId().equals(currentUser.getId()))
             throw new ForbiddenException("Você não tem permissão para excluir este comentário.");
+        log.info("Deletando comentario");
         commentRepository.delete(comment);
     }
 

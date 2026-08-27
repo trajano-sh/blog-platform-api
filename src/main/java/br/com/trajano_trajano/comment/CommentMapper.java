@@ -17,9 +17,8 @@ public class CommentMapper {
         return comment;
     }
 
-    public Comment toUpdate(Comment comment,CommentRequestDTO dto) {
+    public void toUpdate(Comment comment, CommentRequestDTO dto) {
         comment.setContent(dto.content());
-        return comment;
     }
 
     public CommentResponseDTO toResponse(Comment comment) {
