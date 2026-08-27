@@ -1,5 +1,8 @@
 package br.com.trajano_trajano.post;
 
+import br.com.trajano_trajano.comment.CommentService;
+import br.com.trajano_trajano.comment.dto.CommentRequestDTO;
+import br.com.trajano_trajano.comment.dto.CommentResponseDTO;
 import br.com.trajano_trajano.shared.pagination.PageResponse;
 import br.com.trajano_trajano.user.User;
 import br.com.trajano_trajano.post.dto.PostRequestDTO;
@@ -21,7 +24,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/posts")
 public class PostController {
     private final PostService postService;
-    private final UserService userService;
+    private final CommentService commentService;
 
     @PostMapping
     public ResponseEntity<Void> createPost(@AuthenticationPrincipal User user, @RequestBody PostRequestDTO dto) {
@@ -58,6 +61,15 @@ public class PostController {
 
         postService.likePost(postId, user.getId());
         return ResponseEntity.noContent().build();
+    }
+    @PostMapping("/{postId}/comments")
+    public ResponseEntity<Void> createComment(@PathVariable UUID postId, @AuthenticationPrincipal User user, @RequestBody CommentRequestDTO dto){
+        commentService.createComment(postId,user,dto);
+        return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/{postId}/comments")
+    public ResponseEntity<PageResponse<CommentResponseDTO>> getCommentsByPost(@PathVariable UUID postId,Pageable pageable){
+        return ResponseEntity.ok(PageResponse.from(commentService.getCommentsByPost(postId,pageable)));
     }
 
     @DeleteMapping("/{postId}/likes")

@@ -84,9 +84,8 @@ public class UserService {
         User follower = findByUserIdOrThrow(currentUser.getId());
         User targetUser = findByUsernameOrThrow(usernameToToggle);
 
-        if (follower.getId().equals(targetUser.getId())) {
+        if (follower.getId().equals(targetUser.getId()))
             throw new BadRequestException("Você não pode seguir a si mesmo.");
-        }
 
         boolean isFollowing;
         if (follower.getFollowing().contains(targetUser)) {
@@ -98,7 +97,6 @@ public class UserService {
             targetUser.getFollowers().add(follower);
             isFollowing = true;
         }
-
         userRepository.save(follower);
         return isFollowing;
     }
@@ -121,6 +119,7 @@ public class UserService {
     }
 
     public User findByUsernameOrThrow(String username) {
+        log.info("Procurando usuário por username: {}", username);
         return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
     }
 }

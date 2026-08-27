@@ -7,8 +7,6 @@ import br.com.trajano_trajano.post.Post;
 import br.com.trajano_trajano.user.User;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 public class CommentMapper {
     public Comment toEntity(Post post, User author, CommentRequestDTO dto) {
@@ -16,6 +14,11 @@ public class CommentMapper {
         comment.setContent(dto.content());
         comment.setAuthor(author);
         comment.setPost(post);
+        return comment;
+    }
+
+    public Comment toUpdate(Comment comment,CommentRequestDTO dto) {
+        comment.setContent(dto.content());
         return comment;
     }
 
