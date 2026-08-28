@@ -26,13 +26,14 @@ public class CommentService {
     private final PostService postService;
 
     @Transactional
-    public void createComment(UUID postId, User user, CommentRequestDTO dto) {
+    public CommentResponseDTO createComment(UUID postId, User user, CommentRequestDTO dto) {
         Post post = postService.findByPostIdOrThrow(postId);
         Comment comment = commentMapper.toEntity(post, user, dto);
         comment = commentRepository.save(comment);
 
         log.info("Comentário criado com sucesso: commentId={}, postId={}, authorId={}", 
                 comment.getId(), postId, user.getId());
+        return commentMapper.toResponse(comment);
     }
 
     @Transactional

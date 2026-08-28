@@ -122,24 +122,24 @@ public class PostService {
         log.info("Curtida removida: postId={}, userId={}", postId, userId);
     }
 
-    @Transactional
-    public boolean toggleLike(UUID postId, UUID userId) {
-        Post post = findByPostIdOrThrow(postId);
-        User user = userService.findByUserIdOrThrow(userId);
+    // @Transactional
+    // public boolean toggleLike(UUID postId, UUID userId) {
+    //     Post post = findByPostIdOrThrow(postId);
+    //     User user = userService.findByUserIdOrThrow(userId);
 
-        boolean isLiked;
-        if (post.getLikes().contains(user)) {
-            post.getLikes().remove(user);
-            isLiked = false;
-        } else {
-            post.getLikes().add(user);
-            isLiked = true;
-        }
+    //     boolean isLiked;
+    //     if (post.getLikes().contains(user)) {
+    //         post.getLikes().remove(user);
+    //         isLiked = false;
+    //     } else {
+    //         post.getLikes().add(user);
+    //         isLiked = true;
+    //     }
 
-        postRepository.save(post);
-        log.info("Toggle like executado: postId={}, userId={}, isLiked={}", postId, userId, isLiked);
-        return isLiked;
-    }
+    //     postRepository.save(post);
+    //     log.info("Toggle like executado: postId={}, userId={}, isLiked={}", postId, userId, isLiked);
+    //     return isLiked;
+    // }
 
     @Transactional
     public void deletePost(UUID postId, UUID userId) {

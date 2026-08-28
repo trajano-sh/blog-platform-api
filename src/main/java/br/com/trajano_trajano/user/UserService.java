@@ -2,6 +2,7 @@ package br.com.trajano_trajano.user;
 
 import java.util.UUID;
 
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +12,6 @@ import br.com.trajano_trajano.shared.exception.NotFoundException;
 import br.com.trajano_trajano.user.dto.ChangePasswordDTO;
 import br.com.trajano_trajano.user.dto.UserMeResponseDTO;
 import br.com.trajano_trajano.user.dto.UserProfileResponseDTO;
-import br.com.trajano_trajano.user.dto.UserResponseDTO;
 import br.com.trajano_trajano.user.dto.UserUpdateProfileDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,20 +50,19 @@ public class UserService {
     }
 
     @Transactional
-    public void changePassword(User user, ChangePasswordDTO dto) {
+    public void changePassword(User currentUser, ChangePasswordDTO dto) {
+        User user = findByUserIdOrThrow(currentUser.getId());
         if (!passwordEncoder.matches(dto.currentPassword(), user.getPassword())) {
-            log.warn("Falha ao alterar senha: senha atual incorreta. userId={}", user.getId());
-            throw new BadRequestException("A senha atual está incorreta");
+            throw new BadCredentialsException("A senha atual informada está incorreta.");
         }
-        if (!dto.newPassword().equals(dto.confirmPassword())) {
-            throw new BadRequestException("A nova senha e a confirmação não coincidem");
-        }
+
         if (passwordEncoder.matches(dto.newPassword(), user.getPassword())) {
-            throw new BadRequestException("A nova senha não pode ser igual à senha atual");
+            throw new BadRequestException("A nova senha não pode ser igual à senha atual.");
         }
 
         user.setPassword(passwordEncoder.encode(dto.newPassword()));
         userRepository.save(user);
+
         log.info("Senha alterada com sucesso: userId={}", user.getId());
     }
 
@@ -105,31 +104,31 @@ public class UserService {
         log.info("Usuário deixou de seguir: followerId={}, targetId={}", follower.getId(), targetUser.getId());
     }
 
-    @Transactional
-    public boolean toggleFollow(User currentUser, String usernameToToggle) {
-        User follower = findByUserIdOrThrow(currentUser.getId());
-        User targetUser = findByUsernameOrThrow(usernameToToggle);
+    // @Transactional
+    // public boolean toggleFollow(User currentUser, String usernameToToggle) {
+    //     User follower = findByUserIdOrThrow(currentUser.getId());
+    //     User targetUser = findByUsernameOrThrow(usernameToToggle);
 
-        if (follower.getId().equals(targetUser.getId())) {
-            throw new BadRequestException("Você não pode seguir a si mesmo.");
-        }
+    //     if (follower.getId().equals(targetUser.getId())) {
+    //         throw new BadRequestException("Você não pode seguir a si mesmo.");
+    //     }
 
-        boolean isFollowing;
-        if (follower.getFollowing().contains(targetUser)) {
-            follower.getFollowing().remove(targetUser);
-            targetUser.getFollowers().remove(follower);
-            isFollowing = false;
-        } else {
-            follower.getFollowing().add(targetUser);
-            targetUser.getFollowers().add(follower);
-            isFollowing = true;
-        }
-        userRepository.save(follower);
+    //     boolean isFollowing;
+    //     if (follower.getFollowing().contains(targetUser)) {
+    //         follower.getFollowing().remove(targetUser);
+    //         targetUser.getFollowers().remove(follower);
+    //         isFollowing = false;
+    //     } else {
+    //         follower.getFollowing().add(targetUser);
+    //         targetUser.getFollowers().add(follower);
+    //         isFollowing = true;
+    //     }
+    //     userRepository.save(follower);
 
-        log.info("Toggle follow executado: followerId={}, targetId={}, statusSeguindo={}",
-                follower.getId(), targetUser.getId(), isFollowing);
-        return isFollowing;
-    }
+    //     log.info("Toggle follow executado: followerId={}, targetId={}, statusSeguindo={}",
+    //             follower.getId(), targetUser.getId(), isFollowing);
+    //     return isFollowing;
+    // }
 
     @Transactional
     public void deleteUser(User userAuth) {
@@ -138,7 +137,7 @@ public class UserService {
         log.info("Conta de usuário deletada com sucesso: userId={}", user.getId());
     }
 
-    public UserResponseDTO findUserById(UUID userId) {
+    public UserMeResponseDTO findUserById(UUID userId) {
         User user = findByUserIdOrThrow(userId);
         return userMapper.toResponse(user);
     }

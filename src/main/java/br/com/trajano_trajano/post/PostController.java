@@ -6,10 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +26,7 @@ import br.com.trajano_trajano.post.dto.PostRequestDTO;
 import br.com.trajano_trajano.post.dto.PostResponseDTO;
 import br.com.trajano_trajano.shared.pagination.PageResponse;
 import br.com.trajano_trajano.user.User;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -36,6 +39,12 @@ public class PostController {
     @PostMapping
     public ResponseEntity<Void> createPost(@AuthenticationPrincipal User user, @RequestBody PostRequestDTO dto) {
         postService.createPost(user.getId(), dto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{postId}")
+    public ResponseEntity<Void> updatePost(@PathVariable UUID postId, @AuthenticationPrincipal User user, @Valid @RequestBody PostRequestDTO dto) {
+        postService.updatePost(postId,user.getId(),dto);
         return ResponseEntity.noContent().build();
     }
 
@@ -71,9 +80,9 @@ public class PostController {
     }
 
     @PostMapping("/{postId}/comments")
-    public ResponseEntity<Void> createComment(@PathVariable UUID postId, @AuthenticationPrincipal User user, @RequestBody CommentRequestDTO dto){
+    public ResponseEntity<CommentResponseDTO> createComment(@PathVariable UUID postId, @AuthenticationPrincipal User user, @RequestBody CommentRequestDTO dto){
         commentService.createComment(postId,user,dto);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/{postId}/comments")
