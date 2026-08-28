@@ -1,15 +1,16 @@
 package br.com.trajano_trajano.post;
 
-import br.com.trajano_trajano.tag.Tag;
-import br.com.trajano_trajano.user.User;
-import br.com.trajano_trajano.tag.TagRepository;
-import br.com.trajano_trajano.post.dto.PostRequestDTO;
-import br.com.trajano_trajano.post.dto.PostResponseDTO;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
+import br.com.trajano_trajano.post.dto.PostRequestDTO;
+import br.com.trajano_trajano.post.dto.PostResponseDTO;
+import br.com.trajano_trajano.tag.Tag;
+import br.com.trajano_trajano.tag.TagRepository;
+import br.com.trajano_trajano.user.User;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -59,5 +60,4 @@ public class PostMapper {
                 post.getCreatedAt()
         );
     }
-
 }

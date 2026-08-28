@@ -1,11 +1,12 @@
 package br.com.trajano_trajano.security;
 
-import br.com.trajano_trajano.shared.exception.NotFoundException;
-import br.com.trajano_trajano.user.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+
+import br.com.trajano_trajano.shared.exception.NotFoundException;
+import br.com.trajano_trajano.user.UserRepository;
+import lombok.RequiredArgsConstructor;
 
 
 @Service

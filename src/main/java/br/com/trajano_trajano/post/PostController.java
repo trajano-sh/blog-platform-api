@@ -1,23 +1,30 @@
 package br.com.trajano_trajano.post;
 
-import br.com.trajano_trajano.comment.CommentService;
-import br.com.trajano_trajano.comment.dto.CommentRequestDTO;
-import br.com.trajano_trajano.comment.dto.CommentResponseDTO;
-import br.com.trajano_trajano.shared.pagination.PageResponse;
-import br.com.trajano_trajano.user.User;
-import br.com.trajano_trajano.post.dto.PostRequestDTO;
-import br.com.trajano_trajano.post.dto.PostResponseDTO;
-import br.com.trajano_trajano.user.UserService;
-import lombok.RequiredArgsConstructor;
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
+import br.com.trajano_trajano.comment.CommentService;
+import br.com.trajano_trajano.comment.dto.CommentRequestDTO;
+import br.com.trajano_trajano.comment.dto.CommentResponseDTO;
+import br.com.trajano_trajano.post.dto.PostRequestDTO;
+import br.com.trajano_trajano.post.dto.PostResponseDTO;
+import br.com.trajano_trajano.shared.pagination.PageResponse;
+import br.com.trajano_trajano.user.User;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -62,11 +69,13 @@ public class PostController {
         postService.likePost(postId, user.getId());
         return ResponseEntity.noContent().build();
     }
+
     @PostMapping("/{postId}/comments")
     public ResponseEntity<Void> createComment(@PathVariable UUID postId, @AuthenticationPrincipal User user, @RequestBody CommentRequestDTO dto){
         commentService.createComment(postId,user,dto);
         return ResponseEntity.noContent().build();
     }
+
     @GetMapping("/{postId}/comments")
     public ResponseEntity<PageResponse<CommentResponseDTO>> getCommentsByPost(@PathVariable UUID postId,Pageable pageable){
         return ResponseEntity.ok(PageResponse.from(commentService.getCommentsByPost(postId,pageable)));
@@ -74,7 +83,6 @@ public class PostController {
 
     @DeleteMapping("/{postId}/likes")
     public ResponseEntity<Void> unlikePost(@PathVariable UUID postId, @AuthenticationPrincipal User user) {
-
         postService.unlikePost(postId, user.getId());
         return ResponseEntity.noContent().build();
     }

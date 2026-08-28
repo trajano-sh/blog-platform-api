@@ -1,21 +1,26 @@
 package br.com.trajano_trajano.user;
 
-import br.com.trajano_trajano.shared.exception.BadRequestException;
-import br.com.trajano_trajano.shared.exception.ForbiddenException;
-import br.com.trajano_trajano.shared.exception.NotFoundException;
-import br.com.trajano_trajano.user.dto.*;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.UUID;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
+import br.com.trajano_trajano.shared.exception.BadRequestException;
+import br.com.trajano_trajano.shared.exception.NotFoundException;
+import br.com.trajano_trajano.user.dto.ChangePasswordDTO;
+import br.com.trajano_trajano.user.dto.UserMeResponseDTO;
+import br.com.trajano_trajano.user.dto.UserProfileResponseDTO;
+import br.com.trajano_trajano.user.dto.UserResponseDTO;
+import br.com.trajano_trajano.user.dto.UserUpdateProfileDTO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
+
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
@@ -23,47 +28,62 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserMeResponseDTO userMe(User currentUser) {
         User user = findByUserIdOrThrow(currentUser.getId());
+        log.debug("Perfil próprio consultado: userId={}", user.getId());
         return userMapper.userMe(user);
     }
 
     @Transactional(readOnly = true)
     public UserProfileResponseDTO userProfile(String username) {
         User targetUser = findByUsernameOrThrow(username);
+        log.debug("Perfil público consultado: username={}", targetUser.getUsername());
         return userMapper.userProfile(targetUser);
     }
 
     @Transactional
     public UserMeResponseDTO userUpdateProfile(User user, UserUpdateProfileDTO dto) {
-        User menagedUser = findByUserIdOrThrow(user.getId());
+        User managedUser = findByUserIdOrThrow(user.getId());
+        userMapper.userUpdateProfile(managedUser, dto);
+        userRepository.save(managedUser);
 
-        userMapper.userUpdateProfile(menagedUser, dto);
-        userRepository.save(menagedUser);
-        return userMapper.userMe(menagedUser);
+        log.info("Perfil atualizado com sucesso: userId={}", managedUser.getId());
+        return userMapper.userMe(managedUser);
     }
 
     @Transactional
     public void changePassword(User user, ChangePasswordDTO dto) {
-        if (!passwordEncoder.matches(dto.currentPassword(), user.getPassword()))
+        if (!passwordEncoder.matches(dto.currentPassword(), user.getPassword())) {
+            log.warn("Falha ao alterar senha: senha atual incorreta. userId={}", user.getId());
             throw new BadRequestException("A senha atual está incorreta");
-        if (!dto.newPassword().equals(dto.confirmPassword()))
+        }
+        if (!dto.newPassword().equals(dto.confirmPassword())) {
             throw new BadRequestException("A nova senha e a confirmação não coincidem");
-        if (passwordEncoder.matches(dto.newPassword(), user.getPassword()))
+        }
+        if (passwordEncoder.matches(dto.newPassword(), user.getPassword())) {
             throw new BadRequestException("A nova senha não pode ser igual à senha atual");
+        }
+
         user.setPassword(passwordEncoder.encode(dto.newPassword()));
         userRepository.save(user);
+        log.info("Senha alterada com sucesso: userId={}", user.getId());
     }
 
     @Transactional
     public void followUser(User currentUser, String usernameToFollow) {
         User follower = findByUserIdOrThrow(currentUser.getId());
         User targetUser = findByUsernameOrThrow(usernameToFollow);
-        if (follower.getId().equals(targetUser.getId()))
-            throw new BadRequestException("Voce não pode seguir a si mesmo");
-        if (follower.getFollowing().contains(targetUser))
+
+        if (follower.getId().equals(targetUser.getId())) {
+            throw new BadRequestException("Você não pode seguir a si mesmo");
+        }
+        if (follower.getFollowing().contains(targetUser)) {
             throw new BadRequestException("Você já está seguindo este usuário");
+        }
+
         follower.getFollowing().add(targetUser);
         targetUser.getFollowers().add(follower);
         userRepository.save(follower);
+
+        log.info("Usuário seguido: followerId={}, targetId={}", follower.getId(), targetUser.getId());
     }
 
     @Transactional
@@ -71,13 +91,18 @@ public class UserService {
         User follower = findByUserIdOrThrow(currentUser.getId());
         User targetUser = findByUsernameOrThrow(usernameToUnfollow);
 
-        if (follower.getId().equals(targetUser.getId()))
+        if (follower.getId().equals(targetUser.getId())) {
             throw new BadRequestException("Você não pode deixar de seguir a si mesmo");
-        if (!follower.getFollowing().contains(targetUser))
+        }
+        if (!follower.getFollowing().contains(targetUser)) {
             throw new BadRequestException("Você não está seguindo este usuário.");
+        }
+
         follower.getFollowing().remove(targetUser);
         targetUser.getFollowers().remove(follower);
         userRepository.save(follower);
+
+        log.info("Usuário deixou de seguir: followerId={}, targetId={}", follower.getId(), targetUser.getId());
     }
 
     @Transactional
@@ -85,8 +110,9 @@ public class UserService {
         User follower = findByUserIdOrThrow(currentUser.getId());
         User targetUser = findByUsernameOrThrow(usernameToToggle);
 
-        if (follower.getId().equals(targetUser.getId()))
+        if (follower.getId().equals(targetUser.getId())) {
             throw new BadRequestException("Você não pode seguir a si mesmo.");
+        }
 
         boolean isFollowing;
         if (follower.getFollowing().contains(targetUser)) {
@@ -99,15 +125,17 @@ public class UserService {
             isFollowing = true;
         }
         userRepository.save(follower);
+
+        log.info("Toggle follow executado: followerId={}, targetId={}, statusSeguindo={}",
+                follower.getId(), targetUser.getId(), isFollowing);
         return isFollowing;
     }
 
     @Transactional
     public void deleteUser(User userAuth) {
-        log.info("Verificando Usuário.");
         User user = findByUserIdOrThrow(userAuth.getId());
-        log.info("Deletando Usuário: {}", user.getUsername());
         userRepository.delete(user);
+        log.info("Conta de usuário deletada com sucesso: userId={}", user.getId());
     }
 
     public UserResponseDTO findUserById(UUID userId) {
@@ -116,12 +144,20 @@ public class UserService {
     }
 
     public User findByUserIdOrThrow(UUID userId) {
-        log.info("Buscando usuário por ID: {}", userId);
-        return userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
+        log.debug("Buscando usuário por ID: userId={}", userId);
+        return userRepository.findById(userId)
+                .orElseThrow(() -> {
+                    log.warn("Usuário não encontrado: userId={}", userId);
+                    return new NotFoundException("Usuário não encontrado");
+                });
     }
 
     public User findByUsernameOrThrow(String username) {
-        log.info("Procurando usuário por username: {}", username);
-        return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
+        log.debug("Buscando usuário por username: username={}", username);
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> {
+                    log.warn("Usuário não encontrado: username={}", username);
+                    return new NotFoundException("Usuário não encontrado");
+                });
     }
 }

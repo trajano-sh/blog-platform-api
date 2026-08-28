@@ -1,5 +1,15 @@
 package br.com.trajano_trajano.auth;
 
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import br.com.trajano_trajano.auth.dto.LoginRequestDTO;
 import br.com.trajano_trajano.auth.dto.RegisterRequestDTO;
 import br.com.trajano_trajano.auth.dto.TokenResponseDTO;
@@ -12,15 +22,6 @@ import br.com.trajano_trajano.user.User;
 import br.com.trajano_trajano.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +37,7 @@ public class AuthService {
     private long expirationTime;
 
     public void register(RegisterRequestDTO dto) throws BadRequestException {
-        if (userRepository.findByEmail(dto.email()).isPresent()) throw new BadRequestException("Email ja cadastrado");
+        if (userRepository.findByEmail(dto.email()).isPresent()) throw new BadRequestException("Email já cadastrado");
 
         Role role = roleRepository.findByName(RoleTypeEnum.BASIC.name()).orElseGet(() -> roleRepository.save(Role.builder().name(RoleTypeEnum.BASIC.name()).build()));
         User user = authMapper.toEntity(Set.of(role), dto);
@@ -46,7 +47,8 @@ public class AuthService {
 
     public TokenResponseDTO login(LoginRequestDTO dto) {
         try {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.email(), dto.password()));
+            Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(dto.email(), dto.password()));
 
             String token = tokenProvider.generateToken(authentication);
 

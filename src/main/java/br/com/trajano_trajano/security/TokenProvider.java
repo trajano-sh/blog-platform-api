@@ -1,15 +1,18 @@
 package br.com.trajano_trajano.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import java.util.Date;
+
+import javax.crypto.SecretKey;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
-import java.util.Date;
+import br.com.trajano_trajano.shared.exception.InvalidTokenException;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 
 @Component
 public class TokenProvider {
@@ -19,7 +22,6 @@ public class TokenProvider {
     @Value("${jwt.expiration}")
     private long expirationTime;
 
-    // GERAR UM TOKEN
     public String generateToken(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return buildToken(userDetails.getUsername());
@@ -27,22 +29,19 @@ public class TokenProvider {
 
     public String buildToken(String username) {
         Date now = new Date();
-
         Date expirationDate = new Date(now.getTime() + expirationTime);
         return Jwts.builder().subject(username).issuedAt(now).expiration(expirationDate).signWith(getSigningKey()).compact();
     }
 
-    // VALIDAR TOKEN
     public boolean isValid(String token) {
         try {
             extractClaims(token);
             return true;
-        } catch (Exception e) {
+        } catch (InvalidTokenException e) {
             return false;
         }
     }
 
-    // EXTRAIR INFORMACOES DO TOKEN
     public String extractUsername(String token) {
         return extractClaims(token).getSubject();
     }
@@ -54,5 +53,4 @@ public class TokenProvider {
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(key.getBytes());
     }
-
 }
