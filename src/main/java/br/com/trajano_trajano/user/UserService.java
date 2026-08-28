@@ -103,33 +103,7 @@ public class UserService {
 
         log.info("Usuário deixou de seguir: followerId={}, targetId={}", follower.getId(), targetUser.getId());
     }
-
-    // @Transactional
-    // public boolean toggleFollow(User currentUser, String usernameToToggle) {
-    //     User follower = findByUserIdOrThrow(currentUser.getId());
-    //     User targetUser = findByUsernameOrThrow(usernameToToggle);
-
-    //     if (follower.getId().equals(targetUser.getId())) {
-    //         throw new BadRequestException("Você não pode seguir a si mesmo.");
-    //     }
-
-    //     boolean isFollowing;
-    //     if (follower.getFollowing().contains(targetUser)) {
-    //         follower.getFollowing().remove(targetUser);
-    //         targetUser.getFollowers().remove(follower);
-    //         isFollowing = false;
-    //     } else {
-    //         follower.getFollowing().add(targetUser);
-    //         targetUser.getFollowers().add(follower);
-    //         isFollowing = true;
-    //     }
-    //     userRepository.save(follower);
-
-    //     log.info("Toggle follow executado: followerId={}, targetId={}, statusSeguindo={}",
-    //             follower.getId(), targetUser.getId(), isFollowing);
-    //     return isFollowing;
-    // }
-
+    
     @Transactional
     public void deleteUser(User userAuth) {
         User user = findByUserIdOrThrow(userAuth.getId());

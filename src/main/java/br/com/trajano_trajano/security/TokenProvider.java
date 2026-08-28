@@ -17,6 +17,7 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class TokenProvider {
+
     @Value("${jwt.key}")
     private String key;
 
@@ -38,7 +39,7 @@ public class TokenProvider {
         try {
             extractClaims(token);
             return true;
-        } catch (JwtException e) {
+        } catch (InvalidTokenException e) {
             return false;
         }
     }
@@ -48,17 +49,17 @@ public class TokenProvider {
     }
 
     private Claims extractClaims(String token) {
-    try {
-        return Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        try {
+            return Jwts.parser()
+                    .verifyWith(getSigningKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
 
-    } catch (JwtException | IllegalArgumentException e) {
-        throw new InvalidTokenException("Token inválido ou expirado");
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new InvalidTokenException("Token inválido ou expirado");
+        }
     }
-}
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(key.getBytes());

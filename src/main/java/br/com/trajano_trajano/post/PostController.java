@@ -81,8 +81,7 @@ public class PostController {
 
     @PostMapping("/{postId}/comments")
     public ResponseEntity<CommentResponseDTO> createComment(@PathVariable UUID postId, @AuthenticationPrincipal User user, @RequestBody CommentRequestDTO dto){
-        commentService.createComment(postId,user,dto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(postId,user,dto));
     }
 
     @GetMapping("/{postId}/comments")

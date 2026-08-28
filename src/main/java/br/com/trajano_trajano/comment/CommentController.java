@@ -24,13 +24,13 @@ public class CommentController {
     private final CommentService commentService;
 
     @DeleteMapping("/{comments}")
-    public ResponseEntity<Void> deleteComment(@AuthenticationPrincipal User user, @PathVariable UUID comments) {
-        commentService.deleteComment(comments, user);
+    public ResponseEntity<Void> deleteComment(@AuthenticationPrincipal User user, @PathVariable UUID commentId) {
+        commentService.deleteComment(commentId, user);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{commentId}")
     public ResponseEntity<CommentResponseDTO> updateComment(@PathVariable UUID commentId, @AuthenticationPrincipal User currentUser,@RequestBody CommentRequestDTO dto) {
-        return ResponseEntity.ok(commentService.updatedComment(commentId, currentUser, dto));
+        return ResponseEntity.ok(commentService.updateComment(commentId, currentUser, dto));
     }
 }

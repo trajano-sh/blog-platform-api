@@ -37,7 +37,7 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponseDTO updatedComment(UUID commentId, User currentUser, CommentRequestDTO dto) {
+    public CommentResponseDTO updateComment(UUID commentId, User currentUser, CommentRequestDTO dto) {
         Comment comment = findCommentById(commentId);
 
         if (!comment.getAuthor().getId().equals(currentUser.getId())) {
