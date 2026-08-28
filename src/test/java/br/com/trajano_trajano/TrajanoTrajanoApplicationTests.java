@@ -2,12 +2,42 @@ package br.com.trajano_trajano;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.postgresql.PostgreSQLContainer;
 
-@SpringBootTest
+@Testcontainers
+@SpringBootTest(properties = {
+		"jwt.expiration=86400000",
+		"jwt.key=test-key-with-at-least-32-characters"
+})
 class TrajanoTrajanoApplicationTests {
+
+	@Container
+	static final PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:16-alpine");
+
+	@DynamicPropertySource
+	static void configureDatasource(DynamicPropertyRegistry registry) {
+		registry.add("spring.datasource.url", postgres::getJdbcUrl);
+		registry.add("spring.datasource.username", postgres::getUsername);
+		registry.add("spring.datasource.password", postgres::getPassword);
+	}
 
 	@Test
 	void contextLoads() {
+		System.out.println("""
+
+				 ███████████ ███████████     █████████         █████   █████████   ██████   █████    ███████  \s
+				░█░░░███░░░█░░███░░░░░███   ███░░░░░███       ░░███   ███░░░░░███ ░░██████ ░░███   ███░░░░░███\s
+				░   ░███  ░  ░███    ░███  ░███    ░███        ░███  ░███    ░███  ░███░███ ░███  ███     ░░███
+				    ░███     ░██████████   ░███████████        ░███  ░███████████  ░███░░███░███ ░███      ░███
+				    ░███     ░███░░░░░███  ░███░░░░░███        ░███  ░███░░░░░███  ░███ ░░██████ ░███      ░███
+				    ░███     ░███    ░███  ░███    ░███  ███   ░███  ░███    ░███  ░███  ░░█████ ░░███     ███\s
+				    █████    █████   █████ █████   █████░░████████   █████   █████ █████  ░░█████ ░░░███████░ \s
+				   ░░░░░    ░░░░░   ░░░░░ ░░░░░   ░░░░░  ░░░░░░░░   ░░░░░   ░░░░░ ░░░░░    ░░░░░    ░░░░░░░   \s
+				   """);
 	}
 
 }

@@ -53,7 +53,7 @@ public class PostMapper {
                 post.getId(),
                 post.getTitle(),
                 post.getContent(),
-                post.getAuthor().getUsername(),
+                post.getAuthor().getProfileUsername(),
 
                 // EXTRAI APENAS OS NOMES DAS TAGS PARA O DTO
                 post.getTags().stream().map(Tag::getName).collect(Collectors.toSet()),

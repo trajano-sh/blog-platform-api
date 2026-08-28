@@ -15,7 +15,7 @@ public class UserMapper {
     public UserMeResponseDTO userMe(User user) {
         return new UserMeResponseDTO(
                 user.getId(),
-                user.getUsername(),
+                user.getProfileUsername(),
                 user.getEmail(),
                 user.getBio(),
                 user.getRoles()
@@ -35,7 +35,7 @@ public class UserMapper {
     public UserProfileResponseDTO userProfile(User user) {
         return new UserProfileResponseDTO(
                 user.getId(),
-                user.getUsername(),
+                user.getProfileUsername(),
                 user.getBio(),
                 user.getFollowers().size(),
                 user.getFollowing().size(),
@@ -47,7 +47,7 @@ public class UserMapper {
     public UserMeResponseDTO toResponse(User user) {
         return new UserMeResponseDTO(
             user.getId(),
-            user.getUsername(),
+            user.getProfileUsername(),
             user.getEmail(),
             user.getBio(),
             user.getRoles()

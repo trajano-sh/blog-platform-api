@@ -35,7 +35,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserProfileResponseDTO userProfile(String username) {
         User targetUser = findByUsernameOrThrow(username);
-        log.debug("Perfil público consultado: username={}", targetUser.getUsername());
+        log.debug("Perfil público consultado: username={}", targetUser.getProfileUsername());
         return userMapper.userProfile(targetUser);
     }
 

@@ -24,7 +24,7 @@ public class CommentMapper {
     public CommentResponseDTO toResponse(Comment comment) {
         CommentAuthorDTO authorDTO = new CommentAuthorDTO(
                 comment.getAuthor().getId(),
-                comment.getAuthor().getUsername()
+                comment.getAuthor().getProfileUsername()
         );
         return new CommentResponseDTO(
                 comment.getId(),

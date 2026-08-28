@@ -83,6 +83,10 @@ public class User implements UserDetails {
         return this.email;
     }
 
+    public String getProfileUsername() {
+        return this.username;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles;
